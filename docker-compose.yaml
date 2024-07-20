@@ -12,8 +12,8 @@ services:
     build: ./web
     container_name: web
     restart: always
-    ports:
-      - 2222:2222
+    # ports:
+    #   - 2222:2222
     depends_on:
       - mongodb
 
