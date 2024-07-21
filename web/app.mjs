@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 const app = express();
 app.use(express.static("public"));
 app.set("view engine", "ejs");
@@ -8,26 +9,39 @@ const PORT = 2222;
 
 const methodNotAllowed = (req, res, next) => res.status(405).send();
 
-// トップページ
-app.get("/", (req, res) => {
-  res.render("index.ejs");
-});
 
-app.all("/", methodNotAllowed);
+// DB
+main().catch(err => console.log(err));
+
+async function main() {
+  await mongoose.connect('mongodb://127.0.0.1:27017/users');
+
+  // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
+}
+
+// トップページ
+app
+  .route("/")
+  .get((req, res) => {
+    res.render("index.ejs");
+  })
+  .all(methodNotAllowed);
 
 // ログイン画面
-app.get("/login", (req, res) => {
-  res.render("login.ejs");
-});
-
+app
+  .route("/login")
+  .get((req, res) => {
+    res.render("login.ejs");
+  })
+  .all(methodNotAllowed);
 
 app.post("/api/v1/login", (req, res) => {
   if (true) {
     // 認証成功
-    res.render("index.ejs");
+    res.render("index.ejs", { name:"User"});
   } else {
     // 認証失敗
-    res.render("index.ejs");
+    res.render("index.ejs").status(401);
   }
   res.send("Welcome to about page");
 });

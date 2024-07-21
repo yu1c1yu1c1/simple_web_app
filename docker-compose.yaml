@@ -1,3 +1,5 @@
+version: "3"
+
 services:
   nginx:
     build: ./nginx
@@ -12,6 +14,8 @@ services:
     build: ./web
     container_name: web
     restart: always
+    expose:
+      - "2222"
     # ports:
     #   - 2222:2222
     depends_on:
@@ -28,8 +32,8 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
       - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
     volumes:
-      - ./mongo/init.js:/docker-entrypoint-initdb.d/init.js:ro
-      - ./mongo/mongo-data:/data/db
+      - ./mongodb/init_db.js:/docker-entrypoint-initdb.d/init.js:ro
+      - ./mongodb/mongo-data:/data/db
     # Start mongo with authentication enabled
     env_file: .env
     command: [mongod, --auth]
